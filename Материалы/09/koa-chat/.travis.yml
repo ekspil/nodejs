@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - "10.13.0"
+
+# services:
+#   - mongodb
+#   - redis-server
+
+# deploy anywhere
+# after_success:
+#  - gulp deploy
+
+# deploy:
+#   provider: heroku
+#   api_key:
+#     secure: "YOUR ENCRYPTED API KEY"
