@@ -1,25 +1,19 @@
 {
-  "name": "ekspil-weather",
+  "name": "node",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "bin": {
-    "weather": "index.js"
-  },
-  "type": "module",
   "scripts": {
-    "start": "node index.js",
+    "build": "tsc",
+    "start": "node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "Efremov Alexey",
+  "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@types/node": "^22.0.0"
-  },
   "dependencies": {
-    "axios": "^1.7.2",
-    "chalk": "^5.3.0",
-    "dedent-js": "^1.0.1"
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21"
   }
 }
