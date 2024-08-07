@@ -1,30 +1,40 @@
-import express, {Express} from "express"
-import {Server} from "http"
-import { userRouter } from "./user/router"
+import express, { Express } from 'express'
+import { Server } from 'http'
+import { inject, injectable } from 'inversify'
+import { TYPES } from './types'
+import { ILogger } from './logger/logger.interface'
+import { IExeptionFilter } from './errors/exeption.filter.interface'
+import { IUser } from './user/user.interface'
+import 'reflect-metadata'
 
-export class App{
-    app: Express
-    port: number
-    server: Server
+@injectable()
+export class App {
+	port: number
+	server: Server
+	app: Express
 
+	constructor(
+		@inject(TYPES.ILogger) private logger: ILogger,
+		@inject(TYPES.UserController) private userController: IUser,
+		@inject(TYPES.IExeptionFilter) private exeptionFilter: IExeptionFilter
+	) {
+		this.app = express()
+		this.port = 8000
+		this.logger = logger
+	}
 
-    constructor(port?: number) {
-        this.app = express()
-        this.port = port ?? 8000
-    }
+	useRoutes():void {
+		this.app.use('/users', this.userController.router)
+	}
 
+	useExeptionFilters():void {
+		this.app.use(this.exeptionFilter.catch.bind(this.exeptionFilter))
+	}
 
-    useRoutes(){
-        this.app.use("/users", userRouter)
-    }
-
-
-
-
-    public async init(){
-        this.useRoutes()
-        this.server = this.app.listen(this.port)
-        console.log(`Сервер запущен на http://localhost:${this.port}`)
-
-    }
+	public async init():Promise<void> {
+		this.useRoutes()
+		this.useExeptionFilters()
+		this.server = this.app.listen(this.port)
+		this.logger.log(`Сервер запущен на http://localhost:${this.port}`)
+	}
 }

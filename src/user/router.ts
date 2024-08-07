@@ -1,13 +1,16 @@
 import express from "express"
 const userRouter = express.Router()
 
-
-userRouter.get("/get", (req, res) => {
-    res.send("get: Hello")
+userRouter.use((req, res, next) => {
+	next()
 })
 
-userRouter.post("/post", (req, res) => {
-    res.send(`post: Hello`)
+userRouter.post("/login", (req, res) => {
+	res.send("login")
 })
 
-export {userRouter}
+userRouter.post("/register", (req, res) => {
+	res.send(`register`)
+})
+
+export { userRouter }
