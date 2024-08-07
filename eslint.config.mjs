@@ -11,9 +11,16 @@ export default tseslint.config(
 	eslintConfigPrettier,
 	{
 		rules: {
+			'@typescript-eslint/no-floating-promises': 'warn',
 			'@typescript-eslint/no-unused-vars': 'off',
+			'@typescript-eslint/no-empty-object-type': 'off',
 			'@typescript-eslint/explicit-function-return-type': 'warn',
 			'no-undef': 'error',
+		},
+		languageOptions: {
+			parserOptions: {
+				project: 'tsconfig.json',
+			},
 		},
 	},
 	{

@@ -1,4 +1,4 @@
-import express, { Express } from 'express'
+import express, { Express, json } from 'express'
 import { Server } from 'http'
 import { inject, injectable } from 'inversify'
 import { TYPES } from './types'
@@ -23,15 +23,20 @@ export class App {
 		this.logger = logger
 	}
 
-	useRoutes():void {
+	useMiddleware(): void {
+		this.app.use(json())
+	}
+
+	useRoutes(): void {
 		this.app.use('/users', this.userController.router)
 	}
 
-	useExeptionFilters():void {
+	useExeptionFilters(): void {
 		this.app.use(this.exeptionFilter.catch.bind(this.exeptionFilter))
 	}
 
-	public async init():Promise<void> {
+	public init(): void {
+		this.useMiddleware()
 		this.useRoutes()
 		this.useExeptionFilters()
 		this.server = this.app.listen(this.port)
