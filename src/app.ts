@@ -4,7 +4,7 @@ import { inject, injectable } from 'inversify'
 import { TYPES } from './types'
 import { ILogger } from './logger/logger.interface'
 import { IExeptionFilter } from './errors/exeption.filter.interface'
-import { IUser } from './user/user.interface'
+import { IUserController } from './user/user.interface'
 import 'reflect-metadata'
 
 @injectable()
@@ -15,7 +15,7 @@ export class App {
 
 	constructor(
 		@inject(TYPES.ILogger) private logger: ILogger,
-		@inject(TYPES.UserController) private userController: IUser,
+		@inject(TYPES.UserController) private userController: IUserController,
 		@inject(TYPES.IExeptionFilter) private exeptionFilter: IExeptionFilter
 	) {
 		this.app = express()
