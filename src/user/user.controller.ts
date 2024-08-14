@@ -9,8 +9,8 @@ import { ILogger } from '../logger/logger.interface'
 import { IUserController } from './user.interface'
 import { UserLoginDTO } from './dto/userLogin.dto'
 import { UserRegisterDTO } from './dto/userRegister.dto'
-import { User } from './user.entity'
 import { IUserService } from './user.service.interface'
+import { Validator } from '../common/validate.middlleware'
 
 @injectable()
 export class UserController extends BaseRouter implements IUserController {
@@ -29,6 +29,7 @@ export class UserController extends BaseRouter implements IUserController {
 				path: '/register',
 				method: 'post',
 				func: this.register,
+				middlewares: [new Validator(UserRegisterDTO)],
 			},
 		])
 	}
