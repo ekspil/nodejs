@@ -14,10 +14,13 @@ export class ConfigService implements IConfigService {
 			this.logger.error('[ConfigService] Ошибка при чтении файла .env')
 		}
 		if (conf.parsed) {
+			this.logger.log(
+				'[ConfigService] Конфигурация загружена из файла .env'
+			)
 			this.result = conf.parsed
 		}
 	}
-	get<T extends string>(key: string): T {
-		return this.result[key] as T
+	get(key: string): string {
+		return this.result[key]
 	}
 }
