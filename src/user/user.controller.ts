@@ -12,6 +12,7 @@ import { UserRegisterDTO } from './dto/userRegister.dto'
 import { IUserService } from './user.service.interface'
 import { Validator } from '../common/validate.middlleware'
 import { IConfigService } from '../config/config.service.interface'
+import { GuardMiddleware } from '../common/guard.middleware'
 
 @injectable()
 export class UserController extends BaseRouter implements IUserController {
@@ -39,6 +40,7 @@ export class UserController extends BaseRouter implements IUserController {
 				path: '/info',
 				method: 'get',
 				func: this.info,
+				middlewares: [new GuardMiddleware()],
 			},
 		])
 	}
@@ -66,14 +68,8 @@ export class UserController extends BaseRouter implements IUserController {
 		res: Response,
 		next: NextFunction
 	): Promise<void> {
-		if (!user) {
-			return next(new HTTPError(401, 'Auth error', 'User_Info'))
-		}
 		const result = await this.userService.findUser(user)
-		if (!result) {
-			return next(new HTTPError(401, 'User not found', 'User_Info'))
-		}
-		res.send({ email: result.email, name: result.name })
+		res.send({ email: result?.email, name: result?.name, id: result?.id })
 	}
 
 	async register(
