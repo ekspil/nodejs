@@ -6,6 +6,7 @@ import { User } from './user.entity'
 import { TYPES } from '../types'
 import { IConfigService } from '../config/config.service.interface'
 import { IUserRepository } from './user.repo.interface'
+import { UserModel } from '@prisma/client'
 
 @injectable()
 export class UserService implements IUserService {
@@ -32,6 +33,9 @@ export class UserService implements IUserService {
 		const isExist = await this.userRepository.find(email)
 		if (!isExist) return false
 		const user = new User({ email, name: isExist.name }, isExist.password)
-		return user.comparePassword(password)
+		return await user.comparePassword(password)
+	}
+	async findUser(email: string): Promise<UserModel | null> {
+		return this.userRepository.find(email)
 	}
 }

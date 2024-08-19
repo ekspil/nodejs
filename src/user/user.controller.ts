@@ -35,6 +35,11 @@ export class UserController extends BaseRouter implements IUserController {
 				func: this.register,
 				middlewares: [new Validator(UserRegisterDTO)],
 			},
+			{
+				path: '/info',
+				method: 'get',
+				func: this.info,
+			},
 		])
 	}
 
@@ -45,7 +50,7 @@ export class UserController extends BaseRouter implements IUserController {
 	): Promise<void> {
 		const result = await this.userService.validateUser(body)
 		if (!result) {
-			return next(new HTTPError(401, 'Auth error', 'login'))
+			return next(new HTTPError(422, 'Auth error', 'User_Login'))
 		}
 
 		const jwt = await this.signJWT(
@@ -54,6 +59,21 @@ export class UserController extends BaseRouter implements IUserController {
 		)
 
 		res.send(jwt)
+	}
+
+	async info(
+		{ user }: Request,
+		res: Response,
+		next: NextFunction
+	): Promise<void> {
+		if (!user) {
+			return next(new HTTPError(401, 'Auth error', 'User_Info'))
+		}
+		const result = await this.userService.findUser(user)
+		if (!result) {
+			return next(new HTTPError(401, 'User not found', 'User_Info'))
+		}
+		res.send({ email: result.email, name: result.name })
 	}
 
 	async register(

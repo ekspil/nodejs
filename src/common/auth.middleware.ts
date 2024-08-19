@@ -11,12 +11,15 @@ export class AuthMiddleware implements IMiddleware {
 		next: NextFunction
 	): Promise<void> {
 		if (req.headers.authorization) {
-			const token = req.headers.authorization.split(' ')[1]
-			const secret = new TextEncoder().encode(this.secret)
-			const { payload } = await jwtVerify(token, secret)
-			req.user = payload.email as string
-			next()
+			try {
+				const token = req.headers.authorization.split(' ')[1]
+				const secret = new TextEncoder().encode(this.secret)
+				const { payload } = await jwtVerify(token, secret)
+				req.user = payload.email as string
+			} catch (error) {
+				return next()
+			}
 		}
-		next()
+		return next()
 	}
 }
