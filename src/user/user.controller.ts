@@ -11,12 +11,15 @@ import { UserLoginDTO } from './dto/userLogin.dto'
 import { UserRegisterDTO } from './dto/userRegister.dto'
 import { IUserService } from './user.service.interface'
 import { Validator } from '../common/validate.middlleware'
+import { IConfigService } from '../config/config.service.interface'
 
 @injectable()
 export class UserController extends BaseRouter implements IUserController {
 	constructor(
 		@inject(TYPES.ILogger) private log: ILogger,
-		@inject(TYPES.UserService) private userService: IUserService
+		@inject(TYPES.UserService) private readonly userService: IUserService,
+		@inject(TYPES.ConfigService)
+		private readonly configService: IConfigService
 	) {
 		super(log)
 		this.bindRoutes([
@@ -24,6 +27,7 @@ export class UserController extends BaseRouter implements IUserController {
 				path: '/login',
 				method: 'get',
 				func: this.login,
+				middlewares: [new Validator(UserLoginDTO)],
 			},
 			{
 				path: '/register',
@@ -34,12 +38,22 @@ export class UserController extends BaseRouter implements IUserController {
 		])
 	}
 
-	login(
-		req: Request<{}, {}, UserLoginDTO>,
+	async login(
+		{ body }: Request<{}, {}, UserLoginDTO>,
 		res: Response,
 		next: NextFunction
-	): void {
-		next(new HTTPError(401, 'Auth error', 'login'))
+	): Promise<void> {
+		const result = await this.userService.validateUser(body)
+		if (!result) {
+			return next(new HTTPError(401, 'Auth error', 'login'))
+		}
+
+		const jwt = await this.signJWT(
+			body.email,
+			this.configService.get('SECRET')
+		)
+
+		res.send(jwt)
 	}
 
 	async register(
@@ -52,12 +66,12 @@ export class UserController extends BaseRouter implements IUserController {
 			return next(
 				new HTTPError(
 					401,
-					'Пользователь с такими правами не найден',
+					'Пользователь с таким email уже существует',
 					'Register user'
 				)
 			)
 		}
 
-		res.send({ ok: true })
+		res.send(result)
 	}
 }

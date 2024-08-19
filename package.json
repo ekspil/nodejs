@@ -23,6 +23,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "inversify": "^6.0.2",
+    "jose": "^5.6.3",
     "reflect-metadata": "^0.2.2",
     "tslog": "^4.9.3"
   },

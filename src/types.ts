@@ -1,3 +1,4 @@
+
 export const TYPES = {
 	App: Symbol.for('App'),
 	ILogger: Symbol.for('ILogger'),
@@ -6,4 +7,5 @@ export const TYPES = {
 	UserService: Symbol.for('IUserService'),
 	ConfigService: Symbol.for('ConfigService'),
 	PrismaService: Symbol.for('PrismaService'),
+	UserRepository: Symbol.for('UserRepository')
 }
