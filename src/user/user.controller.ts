@@ -26,7 +26,7 @@ export class UserController extends BaseRouter implements IUserController {
 		this.bindRoutes([
 			{
 				path: '/login',
-				method: 'get',
+				method: 'post',
 				func: this.login,
 				middlewares: [new Validator(UserLoginDTO)],
 			},
@@ -60,7 +60,7 @@ export class UserController extends BaseRouter implements IUserController {
 			this.configService.get('SECRET')
 		)
 
-		res.send(jwt)
+		res.send({ jwt })
 	}
 
 	async info(
@@ -81,7 +81,7 @@ export class UserController extends BaseRouter implements IUserController {
 		if (!result) {
 			return next(
 				new HTTPError(
-					401,
+					422,
 					'Пользователь с таким email уже существует',
 					'Register user'
 				)
