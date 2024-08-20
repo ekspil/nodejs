@@ -37,9 +37,8 @@ beforeAll(() => {
 	configService = container.get<IConfigService>(TYPES.ConfigService)
 	userRepository = container.get<IUserRepository>(TYPES.UserRepository)
 })
-
+let createdUser: UserModel | null
 describe('User Service', () => {
-	let createdUser: UserModel | null
 	it('createUser', async () => {
 		configService.get = jest.fn().mockReturnValueOnce('1')
 		userRepository.create = jest.fn().mockImplementationOnce(
@@ -60,16 +59,29 @@ describe('User Service', () => {
 		expect(createdUser?.id).toEqual(2)
 		expect(createdUser?.password).not.toEqual('2')
 	})
-	it('ValidateUser', async () => {
-		userRepository.find = jest
-			.fn()
-			.mockImplementationOnce((email: string): UserModel | null => {
-				return createdUser
-			})
-		const result = userService.validateUser({
+	it('ValidateUser - success', async () => {
+		userRepository.find = jest.fn().mockReturnValueOnce(createdUser)
+		const result = await userService.validateUser({
 			email: 'asd@ddd.ru',
 			password: '2',
 		})
 		expect(result).toBeTruthy()
+	})
+	it('validateUser - wrong password', async () => {
+		userRepository.find = jest.fn().mockReturnValueOnce(createdUser)
+
+		const result = await userService.validateUser({
+			email: 'asd@ddd.ru',
+			password: '3',
+		})
+		expect(result).not.toBeTruthy()
+	})
+	it('validateUser - user not found', async () => {
+		userRepository.find = jest.fn().mockReturnValueOnce(null)
+		const result = await userService.validateUser({
+			email: 'a2sd@ddd.ru',
+			password: '2',
+		})
+		expect(result).not.toBeTruthy()
 	})
 })
