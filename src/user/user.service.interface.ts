@@ -4,7 +4,7 @@ import { UserRegisterDTO } from './dto/userRegister.dto'
 import { User } from './user.entity'
 
 export class IUserService {
-	createUser: (dto: UserRegisterDTO) => Promise<User | null>
+	createUser: (dto: UserRegisterDTO) => Promise<UserModel | null>
 	findUser: (email: string) => Promise<UserModel | null>
 	validateUser: (dto: UserLoginDTO) => Promise<boolean>
 }
